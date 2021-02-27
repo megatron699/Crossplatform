@@ -1,9 +1,10 @@
-
 import 'package:flutter/material.dart';
 import 'package:todo_list/Database.dart';
 import 'package:todo_list/TaskModel.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:todo_list/new_todo_dialog.dart';
+
 
 class TodoListScreen extends StatefulWidget {
   @override
@@ -11,7 +12,6 @@ class TodoListScreen extends StatefulWidget {
 }
 
 class _TodoListScreenState extends State<TodoListScreen> {
-
   _addTodo() async {
     final task = await showDialog<Task>(
       context: context,
@@ -21,6 +21,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
     );
 
     if (task != null) {
+      task.isDone = false;
       setState(() {
         DBProvider.db.addTask(task);
       });
@@ -57,7 +58,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
               },
             );
           } else {
-            return Center(child: CircularProgressIndicator());
+           return Center(child: CircularProgressIndicator());
           }
         },
       ),
@@ -68,3 +69,4 @@ class _TodoListScreenState extends State<TodoListScreen> {
     );
   }
 }
+

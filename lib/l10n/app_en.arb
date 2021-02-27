@@ -2,5 +2,21 @@
   "toDoList": "ToDo List",
   "@toDoList": {
     "description": "App's name"
+  },
+  "newTask": "New Task",
+  "@newTask": {
+    "description": "Label New Task"
+  },
+  "add": "Add",
+  "@add": {
+    "description": "Add Button Label"
+  },
+  "cancel": "Cancel",
+  "@cancel": {
+    "description": "Cancel Button Label"
+  },
+  "taskTextLabel": "Enter the task's text",
+  "@taskTextLabel": {
+    "description": "Label for TextField"
   }
 }

@@ -23,10 +23,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: AppLocalizations.of(context).toDoList,
-      home: MyHomePage(),
-      localizationsDelegates: AppLocalizations.localizationsDelegates, // Add this line
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
+      home: MyHomePage(),
     );
   }
 }
