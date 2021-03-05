@@ -1,0 +1,6 @@
+{
+  "toDoList": "ToDo List",
+  "@toDoList": {
+    "description": "App's name"
+  }
+}

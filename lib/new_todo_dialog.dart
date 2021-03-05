@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:todo_list/TaskModel.dart';
 
-import 'Database.dart';
 
 
 class NewTodoDialog extends StatelessWidget {
@@ -25,11 +24,12 @@ class NewTodoDialog extends StatelessWidget {
         FlatButton(
           child: Text('Add'),
           onPressed: () {
-            final task = new Task(title: controller.value.text, isDone: false);
-            DBProvider.db.newTask(task);
+            final task = new Task(taskDescription: controller.value.text, isDone: false);
+
             controller.clear();
 
             Navigator.of(context).pop(task);
+
           },
         ),
       ],

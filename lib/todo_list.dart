@@ -7,7 +7,6 @@ class ToDoList extends StatelessWidget {
 
 
   final List<Task> tasks;
- // final List<Todo> todos;
   final ToggleTodoCallback onTodoToggle;
 
   Widget _buildItem(BuildContext context, int index) {
@@ -16,7 +15,7 @@ class ToDoList extends StatelessWidget {
     //tasks = dbProvider.getTask()
     return CheckboxListTile(
       value: task.isDone,
-      title: Text(task.title),
+      title: Text(task.taskDescription),
       onChanged: (bool isChecked) {
         onTodoToggle(task, isChecked);
       },

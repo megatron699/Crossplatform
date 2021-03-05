@@ -1,9 +1,9 @@
+
 import 'package:flutter/material.dart';
 import 'package:todo_list/Database.dart';
 import 'package:todo_list/TaskModel.dart';
 
 import 'package:todo_list/new_todo_dialog.dart';
-import 'package:todo_list/todo_list.dart';
 
 class TodoListScreen extends StatefulWidget {
   @override
@@ -11,13 +11,6 @@ class TodoListScreen extends StatefulWidget {
 }
 
 class _TodoListScreenState extends State<TodoListScreen> {
-  List<Task> tasks = DBProvider.db.getTasks();
-
-  _toggleTodo(Task task, bool isChecked) {
-    setState(() {
-      task.isDone = isChecked;
-    });
-  }
 
   _addTodo() async {
     final task = await showDialog<Task>(
@@ -29,22 +22,48 @@ class _TodoListScreenState extends State<TodoListScreen> {
 
     if (task != null) {
       setState(() {
-        tasks.add(task);
+        DBProvider.db.addTask(task);
       });
     }
   }
 
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Todo List')),
-      body: ToDoList(
-        tasks: tasks,
-        onTodoToggle: _toggleTodo,
+      body: FutureBuilder<dynamic>(
+        future: DBProvider.db.getTasks(),
+        builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+          if (snapshot.hasData) {
+            return ListView.builder(
+              itemCount: snapshot.data.length,
+              itemBuilder: (BuildContext context, int index) {
+                Task item = snapshot.data[index];
+                return Dismissible(
+                  key: UniqueKey(),
+                  background: Container(color: Colors.red),
+                  onDismissed: (direction) {
+                    DBProvider.db.deleteTask(item.id);
+                  },
+                  child: ListTile(
+                      title: Text(item.taskDescription),
+                      trailing: Checkbox(
+                        onChanged: (bool value) {
+                          DBProvider.db.doneOrUndone(item);
+                          setState(() {});
+                        },
+                        value: item.isDone,
+                      ),
+                  ),
+                );
+              },
+            );
+          } else {
+            return Center(child: CircularProgressIndicator());
+          }
+        },
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
-        onPressed: _addTodo,
+        onPressed: () => _addTodo(),
       ),
     );
   }

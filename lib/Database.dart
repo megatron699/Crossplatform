@@ -33,18 +33,16 @@ class DBProvider {
     });
   }
 
-  newTask(Task newTask) async {
+  addTask(Task newTask) async {
     final db = await database;
     var res = await db.insert("Task", newTask.toJson());
     return res;
   }
   getTasks() async {
     final db = await database;
-    var res = await db.query("Task").then((value) { return value.isNotEmpty ?
-        value.map((c) => Task.fromJson(c)).toList() : [];});
-    /*List<Task> list =
-     res.isNotEmpty ? res.map((c) => Task.fromJson(c)).toList() : [];
-    return list;*/
+    var res = await db.query("Task");
+    var list = res.isNotEmpty ? res.map((c) => Task.fromJson(c)).toList() : [];
+    return list;
   }
   updateTask(Task newTask) async {
     final db = await database;
@@ -61,7 +59,7 @@ class DBProvider {
     final db = await database;
     Task done = Task(
         id: task.id,
-        title: task.title,
+        taskDescription: task.taskDescription,
         isDone: !task.isDone);
     var res = await db.update("Task", done.toJson(),
         where: "id = ?", whereArgs: [task.id]);
