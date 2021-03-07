@@ -1,10 +1,15 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'package:todo_list/Database.dart';
-import 'package:todo_list/TaskModel.dart';
+import 'dart:io';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart' as syspaths;
+import 'package:path/path.dart' as path;
 
 import 'package:todo_list/new_todo_dialog.dart';
-
+import 'package:todo_list/Database.dart';
+import 'package:todo_list/TaskModel.dart';
 
 class TodoListScreen extends StatefulWidget {
   @override
@@ -12,6 +17,8 @@ class TodoListScreen extends StatefulWidget {
 }
 
 class _TodoListScreenState extends State<TodoListScreen> {
+  File _file;
+
   _addTodo() async {
     final task = await showDialog<Task>(
       context: context,
@@ -25,6 +32,40 @@ class _TodoListScreenState extends State<TodoListScreen> {
       setState(() {
         DBProvider.db.addTask(task);
       });
+    }
+  }
+
+  void _getFromCamera(context) {
+    _getFile(ImageSource.camera, context);
+  }
+
+  Future<void> _getFile(ImageSource source, BuildContext context) async {
+    try {
+      print(source);
+      final File file = await ImagePicker.pickImage(source: source);
+      setState(() {
+        _file = File(file.path);
+        _showBottomSheet(context);
+      });
+      final appDir = await syspaths.getApplicationDocumentsDirectory();
+      final fileName = path.basename(file.path);
+      await file.copy('${appDir.path.split("/")}/$fileName');
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  void _showBottomSheet(context) {
+    if (_file != null) {
+      showModalBottomSheet(
+          context: context,
+          builder: (BuildContext bc) {
+            return Center(
+                child: LimitedBox(
+              child: Image.file(_file),
+              maxHeight: 300,
+            ));
+          });
     }
   }
 
@@ -45,20 +86,20 @@ class _TodoListScreenState extends State<TodoListScreen> {
                     DBProvider.db.deleteTask(item.id);
                   },
                   child: ListTile(
-                      title: Text(item.taskDescription),
-                      trailing: Checkbox(
-                        onChanged: (bool value) {
-                          DBProvider.db.doneOrUndone(item);
-                          setState(() {});
-                        },
-                        value: item.isDone,
-                      ),
+                    title: Text(item.taskDescription),
+                    trailing: Checkbox(
+                      onChanged: (bool value) {
+                        DBProvider.db.doneOrUndone(item);
+                        setState(() {});
+                      },
+                      value: item.isDone,
+                    ),
                   ),
                 );
               },
             );
           } else {
-           return Center(child: CircularProgressIndicator());
+            return Center(child: CircularProgressIndicator());
           }
         },
       ),
@@ -66,6 +107,13 @@ class _TodoListScreenState extends State<TodoListScreen> {
         child: Icon(Icons.add),
         onPressed: () => _addTodo(),
       ),
+      persistentFooterButtons: <Widget>[
+        ElevatedButton.icon(
+            onPressed: () => _getFromCamera(context),
+            icon: Icon(Icons.photo_camera),
+            label: Text("Сделать фото")
+        )
+      ],
     );
   }
 }
