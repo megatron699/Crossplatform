@@ -18,5 +18,6 @@
   "taskTextLabel": "Enter the task's text",
   "@taskTextLabel": {
     "description": "Label for TextField"
-  }
+  },
+  "takePhotoLabel": "Take a photo"
 }

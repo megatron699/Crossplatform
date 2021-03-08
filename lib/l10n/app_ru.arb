@@ -3,5 +3,6 @@
   "newTask": "Новая задача",
   "add": "Добавить",
   "cancel": "Отмена",
-  "taskTextLabel": "Введите текст задачи"
+  "taskTextLabel": "Введите текст задачи",
+  "takePhotoLabel": "Сделать фото"
 }

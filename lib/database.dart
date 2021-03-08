@@ -4,14 +4,17 @@ import 'dart:io';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:todo_list/TaskModel.dart';
+
+import 'package:todo_list/task_model.dart';
 
 
-class DBProvider {
-  DBProvider._();
-  static final DBProvider db = DBProvider._();
+class DbProvider {
+  DbProvider._();
+
+  static final DbProvider db = DbProvider._();
 
   static Database _database;
+
   Future<Database> get database async {
     if (_database != null)
       return _database;
@@ -22,15 +25,16 @@ class DBProvider {
 
   initDB() async {
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
-    String path = join(documentsDirectory.path, "ToDoListDB.db");
-    return await openDatabase(path, version: 1, onOpen: (db) {
-    }, onCreate: (Database db, int version) async {
-      await db.execute("CREATE TABLE Task ("
-          "id INTEGER PRIMARY KEY,"
-          "task_description TEXT,"
-          "is_done BIT"
-          ")");
-    });
+    String path = join(documentsDirectory.path, "TodoListDB.db");
+    return await openDatabase(path, version: 1,
+        onOpen: (db) {},
+        onCreate: (Database db, int version) async {
+          await db.execute("CREATE TABLE Task ("
+              "id INTEGER PRIMARY KEY,"
+              "task_description TEXT,"
+              "is_done BIT"
+              ")");
+        });
   }
 
   addTask(Task newTask) async {
@@ -38,12 +42,14 @@ class DBProvider {
     var res = await db.insert("Task", newTask.toJson());
     return res;
   }
-  getTasks() async {
+
+  Future<List<Task>> getTasks() async {
     final db = await database;
     var res = await db.query("Task");
     var list = res.isNotEmpty ? res.map((c) => Task.fromJson(c)).toList() : [];
     return list;
   }
+
   updateTask(Task newTask) async {
     final db = await database;
     var res = await db.update("Task", newTask.toJson(),
@@ -52,7 +58,8 @@ class DBProvider {
   }
   deleteTask(int id) async {
     final db = await database;
-    db.delete("Task", where: "id = ?", whereArgs: [id]);
+    var res = db.delete("Task", where: "id = ?", whereArgs: [id]);
+    return res;
   }
 
   doneOrUndone(Task task) async {

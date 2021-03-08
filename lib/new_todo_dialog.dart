@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:todo_list/TaskModel.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:todo_list/task_model.dart';
 
 class NewTodoDialog extends StatelessWidget {
   final controller = new TextEditingController();
@@ -18,21 +18,22 @@ class NewTodoDialog extends StatelessWidget {
         ),
       ),
       actions: <Widget>[
-        FlatButton(
+        TextButton(
           child: Text(AppLocalizations.of(context).cancel),
           onPressed: () {
             Navigator.of(context).pop();
           },
         ),
-        FlatButton(
-          child: Text(AppLocalizations.of(context).add),
+        TextButton(
+          child: Text(AppLocalizations
+              .of(context)
+              .add),
           onPressed: () {
             final task = new Task(taskDescription: controller.value.text);
 
             controller.clear();
 
             Navigator.of(context).pop(task);
-
           },
         ),
       ],

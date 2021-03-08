@@ -1,15 +1,15 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'dart:io';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart' as syspaths;
 import 'package:path/path.dart' as path;
 
 import 'package:todo_list/new_todo_dialog.dart';
-import 'package:todo_list/Database.dart';
-import 'package:todo_list/TaskModel.dart';
+import 'package:todo_list/database.dart';
+import 'package:todo_list/task_model.dart';
 
 class TodoListScreen extends StatefulWidget {
   @override
@@ -30,7 +30,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
     if (task != null) {
       task.isDone = false;
       setState(() {
-        DBProvider.db.addTask(task);
+        DbProvider.db.addTask(task);
       });
     }
   }
@@ -71,9 +71,9 @@ class _TodoListScreenState extends State<TodoListScreen> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-      body: FutureBuilder<dynamic>(
-        future: DBProvider.db.getTasks(),
-        builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+      body: FutureBuilder<List<Task>>(
+        future: DbProvider.db.getTasks(),
+        builder: (BuildContext context, AsyncSnapshot<List<Task>> snapshot) {
           if (snapshot.hasData) {
             return ListView.builder(
               itemCount: snapshot.data.length,
@@ -83,13 +83,13 @@ class _TodoListScreenState extends State<TodoListScreen> {
                   key: UniqueKey(),
                   background: Container(color: Colors.red),
                   onDismissed: (direction) {
-                    DBProvider.db.deleteTask(item.id);
+                    DbProvider.db.deleteTask(item.id);
                   },
                   child: ListTile(
                     title: Text(item.taskDescription),
                     trailing: Checkbox(
                       onChanged: (bool value) {
-                        DBProvider.db.doneOrUndone(item);
+                        DbProvider.db.doneOrUndone(item);
                         setState(() {});
                       },
                       value: item.isDone,
@@ -111,8 +111,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
         ElevatedButton.icon(
             onPressed: () => _getFromCamera(context),
             icon: Icon(Icons.photo_camera),
-            label: Text("Сделать фото")
-        )
+            label: Text(AppLocalizations.of(context).takePhotoLabel))
       ],
     );
   }

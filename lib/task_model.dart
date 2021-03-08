@@ -13,18 +13,18 @@ class Task {
 
   int id;
   String taskDescription;
-  bool isDone;
+  bool isDone = false;
 
   factory Task.fromJson(Map<String, dynamic> json) => Task(
-    id: json["id"],
-    taskDescription: json["task_description"],
-    isDone: json["is_done"] == 0 ? false : true,
-  );
+        id: json["id"],
+        taskDescription: json["task_description"],
+        isDone: json["is_done"] == 0 ? false : true,
+      );
 
   Map<String, dynamic> toJson() => {
-    "id": id,
-    "task_description": taskDescription,
-    "is_done": isDone,
+        "id": id,
+        "task_description": taskDescription,
+        "is_done": isDone,
   };
 
 }
