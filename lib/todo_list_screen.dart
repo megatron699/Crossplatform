@@ -111,8 +111,8 @@ class _TodoListScreenState extends State<TodoListScreen> {
         ElevatedButton.icon(
             onPressed: () => _getFromCamera(context),
             icon: Icon(Icons.photo_camera),
-            label: Text(AppLocalizations.of(context).takePhotoLabel))
-      ],
+            label: Text(AppLocalizations.of(context).takePhotoLabel)
+        )],
     );
   }
 }

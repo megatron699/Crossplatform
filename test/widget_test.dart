@@ -8,6 +8,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:todo_list/database.dart';
+import 'package:sqflite_common/sqlite_api.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import 'package:todo_list/main.dart';
 import 'package:todo_list/new_todo_dialog.dart';
@@ -15,6 +17,7 @@ import 'package:todo_list/task_model.dart';
 import 'package:todo_list/todo_list_screen.dart';
 
 void main() {
+
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(MyApp());
@@ -33,13 +36,21 @@ void main() {
     expect(newTodoDialog, findsOneWidget);
   });
   testWidgets('Add and remove a todo', (WidgetTester tester) async {
+    sqfliteFfiInit();
     await tester.pumpWidget(MyApp());
     //  var db = DbProvider.db.initDB();
     // Enter text and add the item...
     var task = new Task();
     task.taskDescription = "task";
-    await tester.pump();
-    await DbProvider.db.addTask(task);
+    var db = await databaseFactoryFfi.openDatabase(inMemoryDatabasePath);
+    await db.execute('''
+  CREATE TABLE Task (
+      id INTEGER PRIMARY KEY,
+      task_description TEXT,
+      is_done BIT
+  )
+  ''');
+    await db.insert('Task', <String, Object>{'task_description': 'aaa'});
     await tester.pump();
     // Swipe the item to dismiss it.
     await tester.drag(find.byType(Dismissible), Offset(500.0, 0.0));

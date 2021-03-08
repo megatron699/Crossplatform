@@ -30,7 +30,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
+  sqflite_common_ffi: 2.0.0
   #database: any
 
 # For information on the generic Dart part of this file, see the
